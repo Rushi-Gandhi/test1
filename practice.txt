@@ -1,0 +1,25 @@
+-- Following reports required on the same
+
+-- 1) Display all these fields ProjectName,EmployeeFullName,StartDate,EndDate
+
+SELECT P.name AS "ProjectName"  ,
+E.FirstName || " " || E.LastName AS "EmployeeFullName" ,
+P.StartDate ,P.EndDate 
+FROM Allocation A INNER JOIN Project P ON A.ProjectID = P.ProjectID 
+INNER JOIN Employee E ON A.EmployeeID = E.EmployeID ;
+
+-- 2) Display all the employee Full Name whose allocation are ending today
+
+SELECT  E.FirstName || " " || E.LastName AS "FullName"
+FROM Employee E INNER JOIN Allocation A ON E.EmployeID = A.EmployeeID 
+WHERE strftime("%d-%m-%Y" , A.EndDate) =  strftime("%d-%m-%Y" , "now");
+
+-- 3) Find out how many employees are working in each project.
+SELECT count(A.EmployeeID) as countEmp , P.name 
+from Allocation A INNER JOIN Project P on P.ProjectID = A.ProjectID 
+GROUP BY A.ProjectID
+
+-- 4) Find out the projectName in which more than 3 employees are working.
+
+SELECT P.name FROM Allocation A INNER JOIN Project P on P.ProjectID = A.ProjectID 
+GROUP BY A.ProjectID HAVING count(A.EmployeeID) > 3
